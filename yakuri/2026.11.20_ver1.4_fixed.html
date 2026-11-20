@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="tool">
+  <meta name="design-style" content="handbook">
+  <title>薬剤師国家試験 頻出125薬 ◯✕一問一答アプリ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&family=Public+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --background: #ffffff;
+      --surface-container-low: #f8f9fa;
+      --surface-container: #f1f3f5;
+      --surface-container-high: #e9ecef;
+      --on-surface: #0b0c0c;
+      --on-surface-variant: #495057;
+      --outline: #0b0c0c;
+      --outline-variant: #ced4da;
+      --primary: #162e51;
+      --primary-hover: #1e3d6b;
+      --on-primary: #ffffff;
+      --primary-container: #e7f0fa;
+      --on-primary-container: #0c2d4a;
+      --secondary: #4c2c92;
+      --tertiary: #1a569e;
+      --error: #b91c1c;
+      --on-error: #ffffff;
+      --error-bg: #fef2f2;
+      --positive: #0f766e;
+      --positive-bg: #f0fdfa;
+      --warning: #b45309;
+      --warning-bg: #fffbeb;
+      --focus: #ffdd00;
+
+      --font-family: 'Noto Sans JP', 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --rounded: 4px;
+      --rounded-lg: 8px;
+
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-family);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 40px;
+    }
+
+    .app-shell {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-md);
+    }
+
+    .index-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-xs) 0;
+      border-bottom: 2px solid var(--primary);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .brand-bar {
+      margin: var(--space-md) 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .brand-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    .brand-sub {
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+    }
+
+    .nav-strip {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      padding-bottom: var(--space-xs);
+      margin-bottom: var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .nav-tab {
+      padding: 8px 14px;
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      border-bottom: none;
+      border-radius: var(--rounded) var(--rounded) 0 0;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .nav-tab:hover { background: var(--surface-container); }
+    .nav-tab--active {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    .setting-bar {
+      background: var(--primary-container);
+      border: 1px solid var(--primary);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .setting-label {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--on-primary-container);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .count-chip-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .count-chip {
+      padding: 4px 12px;
+      border: 1px solid var(--primary);
+      background: #ffffff;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 16px;
+      cursor: pointer;
+    }
+
+    .count-chip:hover { background: var(--surface-container); }
+    .count-chip--active {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+
+    .stat-tile {
+      padding: var(--space-md);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      background: var(--surface-container-low);
+      text-align: center;
+    }
+
+    .stat-tile--mastered { border-left: 4px solid var(--positive); }
+    .stat-tile--review { border-left: 4px solid var(--warning); }
+    .stat-tile--unlearned { border-left: 4px solid var(--on-surface-variant); }
+
+    .stat-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--on-surface-variant);
+    }
+
+    .stat-val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--on-surface);
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+
+    .mode-card {
+      padding: var(--space-md);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded-lg);
+      background: #ffffff;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .mode-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(22, 46, 81, 0.12);
+    }
+
+    .mode-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .mode-card-desc {
+      font-size: 0.8rem;
+      color: var(--on-surface-variant);
+    }
+
+    .btn-primary {
+      padding: 12px 20px;
+      background: var(--primary);
+      color: var(--on-primary);
+      border: none;
+      border-radius: var(--rounded);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-secondary {
+      padding: 10px 16px;
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .btn-secondary:hover { background: var(--surface-container); }
+
+    .quiz-card {
+      background: #ffffff;
+      border: 2px solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-md);
+    }
+
+    .quiz-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+      padding-bottom: var(--space-xs);
+      border-bottom: 1px solid var(--surface-container);
+    }
+
+    .quiz-mode-tag {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--primary);
+    }
+
+    .quiz-counter {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--on-surface-variant);
+    }
+
+    .q-drug-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: var(--space-xs);
+    }
+
+    .q-exam-ref {
+      font-size: 0.8rem;
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-md);
+    }
+
+    .q-statement-box {
+      background: var(--surface-container-low);
+      padding: var(--space-md);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--rounded);
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: var(--space-lg);
+      line-height: 1.7;
+    }
+
+    .answer-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .btn-choice {
+      padding: 18px;
+      border: 2px solid var(--outline-variant);
+      border-radius: var(--rounded-lg);
+      background: #ffffff;
+      font-size: 1.8rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-choice--circle {
+      color: var(--positive);
+      border-color: var(--positive);
+    }
+    .btn-choice--circle:hover { background: var(--positive-bg); }
+
+    .btn-choice--cross {
+      color: var(--error);
+      border-color: var(--error);
+    }
+    .btn-choice--cross:hover { background: var(--error-bg); }
+
+    .btn-choice:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .feedback-box {
+      padding: var(--space-md);
+      border-radius: var(--rounded);
+      margin-bottom: var(--space-md);
+    }
+
+    .feedback-box--correct {
+      background: var(--positive-bg);
+      border: 1.5px solid var(--positive);
+    }
+
+    .feedback-box--wrong {
+      background: var(--error-bg);
+      border: 1.5px solid var(--error);
+    }
+
+    .feedback-verdict {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: var(--space-xs);
+    }
+
+    .feedback-box--correct .feedback-verdict { color: var(--positive); }
+    .feedback-box--wrong .feedback-verdict { color: var(--error); }
+
+    .feedback-trap {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: var(--space-xs);
+    }
+
+    .feedback-explanation {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--on-surface);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .tag--mastered { background: #d1fae5; color: #065f46; }
+    .tag--review { background: #fef3c7; color: #92400e; }
+    .tag--unlearned { background: #e5e7eb; color: #374151; }
+
+    .search-filter-box {
+      display: flex;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+      flex-wrap: wrap;
+    }
+
+    .input-text {
+      flex: 1;
+      min-width: 200px;
+      padding: 8px 12px;
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      font-size: 0.9rem;
+    }
+
+    .select-cat {
+      padding: 8px 12px;
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      font-size: 0.9rem;
+      background: #ffffff;
+    }
+
+    .drug-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: var(--space-md);
+      font-size: 0.85rem;
+    }
+
+    .drug-table th, .drug-table td {
+      padding: 10px 12px;
+      border: 1px solid var(--outline-variant);
+      text-align: left;
+    }
+
+    .drug-table th {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      font-weight: 700;
+    }
+
+    .drug-table tr:nth-child(even) {
+      background: var(--surface-container-low);
+    }
+
+    .mini-quiz-btn {
+      padding: 4px 8px;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-md);
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      padding: var(--space-lg);
+      border-radius: var(--rounded-lg);
+      max-width: 540px;
+      width: 100%;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .textarea-json {
+      width: 100%;
+      height: 140px;
+      padding: var(--space-sm);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      font-family: monospace;
+      font-size: 0.8rem;
+      margin-bottom: var(--space-md);
+    }
+
+    .toast-msg {
+      padding: 8px 12px;
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border-radius: var(--rounded);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 640px) {
+      .stats-row { grid-template-columns: 1fr; }
+      .mode-grid { grid-template-columns: 1fr; }
+      .drug-table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="index-header">
+      <span>薬剤師国家試験 薬理分野 125頻出薬</span>
+      <span id="header-progress-badge">習得 0 / 125</span>
+    </div>
+
+    <header class="brand-bar">
+      <div>
+        <h1 class="brand-title">頻出125薬 ◯✕一問一答</h1>
+        <p class="brand-sub">第97回〜第111回 分析データ収録・品質検証済み完成版</p>
+      </div>
+      <button type="button" class="btn-secondary" id="btn-home" onclick="showView('home')">ホーム</button>
+    </header>
+
+    <div class="setting-bar">
+      <div class="setting-label">
+        <span>⚡ 出題数の設定:</span>
+        <span id="current-count-desc" style="font-size:0.8rem; color:var(--on-primary-container);">(現在: 20問)</span>
+      </div>
+      <div class="count-chip-group">
+        <button type="button" class="count-chip" onclick="setQCount(5, this)">5問</button>
+        <button type="button" class="count-chip" onclick="setQCount(10, this)">10問</button>
+        <button type="button" class="count-chip count-chip--active" onclick="setQCount(20, this)">20問</button>
+        <button type="button" class="count-chip" onclick="setQCount(30, this)">30問</button>
+        <button type="button" class="count-chip" onclick="setQCount('all', this)">全問</button>
+      </div>
+    </div>
+
+    <nav class="nav-strip" aria-label="学習モード切替">
+      <button type="button" class="nav-tab nav-tab--active" id="tab-home" onclick="showView('home')">ホーム</button>
+      <button type="button" class="nav-tab" id="tab-today" onclick="startMode('today')">①今日の学習</button>
+      <button type="button" class="nav-tab" id="tab-random" onclick="startMode('random')">②全問ランダム</button>
+      <button type="button" class="nav-tab" id="tab-category" onclick="showView('category')">③単元別学習</button>
+      <button type="button" class="nav-tab" id="tab-weak" onclick="startMode('weak')">④弱点克服</button>
+      <button type="button" class="nav-tab" id="tab-inspect" onclick="showView('inspect')">⑤125薬剤総点検</button>
+      <button type="button" class="nav-tab" id="tab-test" onclick="startMode('test')">⑥習得確認テスト</button>
+    </nav>
+
+    <main class="main-area">
+      <!-- HOME VIEW -->
+      <section id="view-home">
+        <div class="stats-row">
+          <div class="stat-tile stat-tile--mastered">
+            <span class="stat-label">習得確認済み</span>
+            <span class="stat-val" id="stat-mastered">0</span>
+          </div>
+          <div class="stat-tile stat-tile--review">
+            <span class="stat-label">要復習</span>
+            <span class="stat-val" id="stat-review">0</span>
+          </div>
+          <div class="stat-tile stat-tile--unlearned">
+            <span class="stat-label">未学習</span>
+            <span class="stat-val" id="stat-unlearned">125</span>
+          </div>
+        </div>
+
+        <div id="toast-notify" class="toast-msg hidden" style="margin-bottom:var(--space-md);"></div>
+
+        <h2 style="font-size:1.1rem; font-weight:800; color:var(--primary); margin-bottom:var(--space-sm);">学習モード選択</h2>
+        <div class="mode-grid">
+          <div class="mode-card" onclick="startMode('today')">
+            <div class="mode-card-title">① 今日の学習</div>
+            <div class="mode-card-desc">復習期日の来た薬剤・弱点・未学習薬を自動抽出</div>
+          </div>
+          <div class="mode-card" onclick="startMode('random')">
+            <div class="mode-card-title">② 全問ランダム</div>
+            <div class="mode-card-desc">全125薬からランダムに出題</div>
+          </div>
+          <div class="mode-card" onclick="showView('category')">
+            <div class="mode-card-title">③ 単元別学習</div>
+            <div class="mode-card-desc">自律神経・中枢神経など13分類ごとに演習</div>
+          </div>
+          <div class="mode-card" onclick="startMode('weak')">
+            <div class="mode-card-title">④ 弱点克服</div>
+            <div class="mode-card-desc">誤答履歴のある要復習薬を優先出題</div>
+          </div>
+          <div class="mode-card" onclick="showView('inspect')">
+            <div class="mode-card-title">⑤ 125薬剤総点検</div>
+            <div class="mode-card-desc">全125薬の1文まとめ一覧閲覧 & 個別演習</div>
+          </div>
+          <div class="mode-card" onclick="startMode('test')">
+            <div class="mode-card-title">⑥ 習得確認テスト</div>
+            <div class="mode-card-desc">習得判定を行う総仕上げテスト</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CATEGORY SELECTION VIEW -->
+      <section id="view-category" class="hidden">
+        <h2 style="font-size:1.1rem; font-weight:800; color:var(--primary); margin-bottom:var(--space-sm);">単元（分類）を選択</h2>
+        <div id="category-list" style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:var(--space-sm);"></div>
+      </section>
+
+      <!-- INSPECTOR / SUMMARY VIEW -->
+      <section id="view-inspect" class="hidden">
+        <h2 style="font-size:1.1rem; font-weight:800; color:var(--primary); margin-bottom:var(--space-sm);">全125薬剤 1文まとめ総点検一覧</h2>
+        <div class="search-filter-box">
+          <input type="text" id="inspect-search" class="input-text" placeholder="薬剤名・作用機序で検索..." oninput="renderInspectTable()">
+          <select id="inspect-cat-select" class="select-cat" onchange="renderInspectTable()">
+            <option value="all">すべての単元 (13分類)</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="drug-table">
+            <thead>
+              <tr>
+                <th style="width:50px;">No.</th>
+                <th style="width:130px;">薬剤名</th>
+                <th style="width:120px;">分類</th>
+                <th>1文まとめ (作用機序・主要標的)</th>
+                <th style="width:80px;">状態</th>
+                <th style="width:70px;">操作</th>
+              </tr>
+            </thead>
+            <tbody id="inspect-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- QUIZ VIEW -->
+      <section id="view-quiz" class="hidden">
+        <div class="quiz-card">
+          <div class="quiz-meta">
+            <span class="quiz-mode-tag" id="quiz-mode-label">演習モード</span>
+            <span class="quiz-counter" id="quiz-counter">1 / 20</span>
+          </div>
+          <div>
+            <span id="q-status-tag" class="tag tag--unlearned">未学習</span>
+            <span id="q-category" style="font-size:0.85rem; font-weight:700; color:var(--on-surface-variant); margin-left:8px;">自律神経系</span>
+          </div>
+          <div class="q-drug-title" id="q-drug-name">ベタネコール</div>
+          <div class="q-exam-ref" id="q-exam-ref">出題実績: 第99回問28...</div>
+
+          <div class="q-statement-box" id="q-statement">
+            ベタネコールは、ムスカリン性アセチルコリン受容体（主に M3 受容体）を選択的に刺激し...
+          </div>
+
+          <div class="answer-btn-grid">
+            <button type="button" class="btn-choice btn-choice--circle" id="btn-answer-o" onclick="submitAnswer(true)">
+              <span>◯</span> 正しい
+            </button>
+            <button type="button" class="btn-choice btn-choice--cross" id="btn-answer-x" onclick="submitAnswer(false)">
+              <span>✕</span> 誤り
+            </button>
+          </div>
+
+          <div id="feedback-area" class="feedback-box hidden">
+            <div class="feedback-verdict" id="feedback-verdict">正解！</div>
+            <div class="feedback-trap" id="feedback-trap"></div>
+            <div class="feedback-explanation" id="feedback-explanation"></div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; margin-top:var(--space-md);">
+            <button type="button" class="btn-primary hidden" id="btn-next-question" onclick="nextQuestion()">次の問題へ</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESULT VIEW -->
+      <section id="view-result" class="hidden">
+        <div class="quiz-card" style="text-align:center;">
+          <h2 style="font-size:1.4rem; font-weight:800; color:var(--primary); margin-bottom:var(--space-sm);">演習完了！</h2>
+          <div style="font-size:2.2rem; font-weight:800; color:var(--primary); margin-bottom:var(--space-sm);" id="result-score-val">18 / 20</div>
+          <p id="result-message" style="font-weight:700; color:var(--on-surface-variant); margin-bottom:var(--space-md);"></p>
+          <div style="display:flex; gap:var(--space-sm); justify-content:center;">
+            <button type="button" class="btn-secondary" onclick="showView('home')">ホームに戻る</button>
+            <button type="button" class="btn-primary" onclick="retryLastMode()">もう一度挑戦</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Data Management Modal -->
+    <div id="import-modal" class="modal-backdrop hidden">
+      <div class="modal-content">
+        <div class="modal-title">学習データの引き継ぎ (JSON)</div>
+        <p style="font-size:0.85rem; color:var(--on-surface-variant); margin-bottom:var(--space-sm);">
+          バックアップした学習データ (JSON) を貼り付けてインポートできます。
+        </p>
+        <textarea id="import-json-text" class="textarea-json" placeholder="ここにJSONテキストを貼り付け..."></textarea>
+        <div style="display:flex; gap:var(--space-sm); justify-content:flex-end;">
+          <button type="button" class="btn-secondary" onclick="toggleImportModal(false)">キャンセル</button>
+          <button type="button" class="btn-primary" onclick="processImportJSON()">インポート実行</button>
+        </div>
+      </div>
+    </div>
+
+    <footer style="margin-top:var(--space-xl); padding-top:var(--space-md); border-top:1px solid var(--outline-variant); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-sm); font-size:0.8rem; color:var(--on-surface-variant);">
+      <div>出典: 薬剤師国家試験 頻出125薬分析データ</div>
+      <div style="display:flex; gap:var(--space-xs); align-items:center;">
+        <span id="save-status-msg" style="font-weight:700; color:var(--positive);">自動保存: 有効</span>
+        <button type="button" class="btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="exportDataJSON()">JSON出力</button>
+        <button type="button" class="btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="toggleImportModal(true)">JSON入力</button>
+        <button type="button" class="btn-secondary" style="padding:4px 8px; font-size:0.75rem; color:var(--error);" onclick="confirmResetAll()">履歴リセット</button>
+      </div>
+    </footer>
+  </div>
+
+  <api-shim></api-shim>
+  <script>
+const RAW_DRUGS = [
+      { id: 1, category: `自律神経系`, name: `ベタネコール`, exam: `第99回問28、第100回問26、第101回問33、第103回問29/151、第104回問27、第106回問152、第110回問26`, desc: `ムスカリン性アセチルコリン受容体（主に M3 受容体）を選択的に刺激し、消化管や膀胱（排尿筋）の運動を亢進させる。` },
+      { id: 2, category: `自律神経系`, name: `アトロピン`, exam: `第97回問28、第98回問28、第103回問151、第108回問27、第110回問26`, desc: `ムスカリン性アセチルコリン受容体を競合的に遮断し、瞳孔括約筋弛緩（散瞳）、唾液分泌抑制、消化管運動抑制を引き起こす。` },
+      { id: 3, category: `自律神経系`, name: `オキシブチニン`, exam: `第99回問28、第102回問153、第104回問27、第105回問152`, desc: `ムスカリン M3 受容体を遮断し、膀胱排尿筋の過度な収縮を抑えて過活動膀胱や頻尿を改善する。` },
+      { id: 4, category: `自律神経系`, name: `ネオスチグミン`, exam: `第99回問28、第100回問26、第102回問153、第104回問27`, desc: `コリンエステラーゼを可逆的に阻害してアセチルコリンの分解を抑え、副交感神経作用（重症筋無力症や手術後腸管麻痺の改善）を強める。` },
+      { id: 5, category: `自律神経系`, name: `ドブタミン`, exam: `第97回問32、第102回問152、第111回問33`, desc: `アドレナリン β1 受容体を優位に刺激することで心筋収縮力を増大させ、強心作用を示す。` },
+      { id: 6, category: `自律神経系`, name: `プロプラノロール`, exam: `第98回問27、第99回問29、第102回問158`, desc: `アドレナリン β2 受容体を遮断して気管支平滑筋を収縮させるため、気管支ぜん息患者に禁忌である。` },
+      { id: 7, category: `自律神経系`, name: `リトドリン`, exam: `第101回問28、第103回問151、第111回問35`, desc: `アドレナリン β2 受容体を選択的に刺激して子宮平滑筋を弛緩させ、切迫流・早産の治療に用いられる。` },
+      { id: 8, category: `自律神経系`, name: `フェニレフリン`, exam: `第99回問33、第102回問152、第110回問27`, desc: `アドレナリン α1 受容体を選択的に刺激し、瞳孔散大筋を収縮させて散瞳を引き起こすとともに、血管平滑筋を収縮させて血圧を上昇させる。` },
+      { id: 9, category: `自律神経系`, name: `クロニジン`, exam: `第98回問33、第99回問29、第103回問152`, desc: `中枢のアドレナリン α2 受容体を刺激し、交感神経終末からのノルアドレナリン遊離を抑制して血圧を低下させる。` },
+      { id: 10, category: `自律神経系`, name: `イプラトロピウム`, exam: `第103回問29、第104回問32、第107回問153`, desc: `吸入により気管支平滑筋のムスカリン M3 受容体を遮断し、副交感神経による気管支収縮を抑えて気管支を拡張させる。` },
+      { id: 11, category: `自律神経系`, name: `プラゾシン`, exam: `第98回問33、第103回問33`, desc: `血管平滑筋のアドレナリン α1 受容体を選択的に遮断して血管を拡張し、降圧作用を示す。` },
+      { id: 12, category: `自律神経系`, name: `ミラベグロン`, exam: `第103回問152、第107回問160`, desc: `アドレナリン β3 受容体を選択的に刺激して膀胱平滑筋（排尿筋）を弛緩させ、過活動膀胱の蓄尿機能を高める。` },
+      { id: 13, category: `自律神経系`, name: `ナファゾリン`, exam: `第99回問33、第105回問152`, desc: `アドレナリン α 受容体を刺激して局所の血管を収縮させ、充血を除去する。` },
+      { id: 14, category: `中枢神経系`, name: `バルプロ酸`, exam: `第97回問31、第102回問30`, desc: `GABAトランスアミナーゼを阻害して脳内GABAの分解を抑え、全般発作の第一選択薬となる。` },
+      { id: 15, category: `中枢神経系`, name: `カルバマゼピン`, exam: `第97回問31、第103回問32`, desc: `電位依存性 Na＋ チャネルを遮断し、焦点発作（部分発作）および三叉神経痛の第一選択薬となる。` },
+      { id: 16, category: `中枢神経系`, name: `エトスクシミド`, exam: `第97回問31、第102回問30、第103回問32、第104回問30`, desc: `視床の T 型 Ca2＋ チャネルを選択的に遮断し、全般欠神発作（小発作）の第一選択薬となる。` },
+      { id: 17, category: `中枢神経系`, name: `レベチラセタム`, exam: `第103回問32、第111回問30`, desc: `シナプス小胞タンパク質 2A（SV2A）に結合し、興奮性神経伝達物質の遊離を抑制する。` },
+      { id: 18, category: `中枢神経系`, name: `ガバペンチン`, exam: `第102回問30、第103回問32、第104回問30、第107回問30`, desc: `電位依存性 Ca2＋ チャネルの α2δ サブユニットに結合し、興奮性神経伝達物質の遊離を抑える。` },
+      { id: 19, category: `中枢神経系`, name: `アリピプラゾール`, exam: `第101回問30`, desc: `ドパミン D2・5-HT1A 受容体部分刺激作用および 5-HT2A 受容体遮断作用をもつ。` },
+      { id: 20, category: `中枢神経系`, name: `リスペリドン`, exam: `第109回問28、第111回問29`, desc: `セロトニン 5-HT2A 受容体およびドパミン D2 受容体を遮断する非定型抗精神病薬（SDA）。` },
+      { id: 21, category: `中枢神経系`, name: `ハロペリドール`, exam: `第101回問30、第111回問29`, desc: `強力なドパミン D2 受容体遮断作用をもち、統合失調症の陽性症状を強く改善する。` },
+      { id: 22, category: `中枢神経系`, name: `ラメルテオン`, exam: `第104回問29`, desc: `視床下部のメラトニン MT1/MT2 受容体を刺激し、睡眠・覚醒リズムを整えて入眠困難を改善する。` },
+      { id: 23, category: `中枢神経系`, name: `エンタカポン`, exam: `第98回問30`, desc: `末梢の COMT を選択的に阻害し、レボドパの代謝を抑えて脳内移行量を増加させる。` },
+      { id: 24, category: `中枢神経系`, name: `スボレキサント`, exam: `第104回問29`, desc: `オレキシン受容体（OX1/OX2）を拮抗的に遮断し、脳の覚醒システムを抑制して睡眠を誘導する。` },
+      { id: 25, category: `循環器系`, name: `ジゴキシン`, exam: `第98回問32、第100回問30、第101回問31`, desc: `心筋の Na＋,K＋-ATPase を阻害し、細胞内 Ca2＋ 濃度を高めて強心作用を示す。` },
+      { id: 26, category: `循環器系`, name: `ベラパミル`, exam: `第99回問32、第102回問31、第104回問31、第110回問34`, desc: `心臓（洞房結節・房室結節）の L 型 Ca2＋ チャネル遮断作用が強く、頻脈性不整脈に用いられる。` },
+      { id: 27, category: `循環器系`, name: `ニコランジル`, exam: `第102回問32、第105回問33、第110回問34`, desc: `K＋ チャネル開口作用と NO 遊離作用の双対機序により、冠動脈および末梢血管を拡張させる。` },
+      { id: 28, category: `循環器系`, name: `アミオダロン`, exam: `第100回問31`, desc: `主に K＋ チャネルを遮断（クラス III）するが、Na＋・Ca2＋・β遮断作用も併せ持ち、致死性不整脈に用いられる。` },
+      { id: 29, category: `循環器系`, name: `カンデサルタン`, exam: `第103回問34`, desc: `アンギオテンシン II AT1 受容体を選択的に遮断し、降圧作用を示す。` },
+      { id: 30, category: `循環器系`, name: `アムロジピン`, exam: `第108回理論問152等`, desc: `血管平滑筋の L 型 Ca2＋ チャネルを遮断し、持続的な降圧作用と冠動脈拡張作用を示す。` },
+      { id: 31, category: `循環器系`, name: `エナラプリル`, exam: `第106回理論問153等`, desc: `ACE を阻害し、Ang II 産生抑制とブラジキニン分解抑制により血圧を下げる。` },
+      { id: 32, category: `循環器系`, name: `ニトログリセリン`, exam: `第97回問33、第106回問33`, desc: `体内で NO を放出し、cGMP を増加させて主として静脈系血管を拡張させる発作治療薬。` },
+      { id: 33, category: `循環器系`, name: `フレカイニド`, exam: `第104回問31`, desc: `心筋の Na＋ チャネルを強力に遮断（クラス Ic）し、活動電位立ち上がり速度を抑制する。` },
+      { id: 34, category: `循環器系`, name: `ピモベンダン`, exam: `第100回問30、第107回問33、第108回問32`, desc: `心筋の Ca2＋ 感受性を高めるとともに PDE III を阻害し、血管拡張を伴う強心作用を示す。` },
+      { id: 35, category: `消化器系`, name: `ボノプラザン`, exam: `第105回問35`, desc: `K＋ と競合して H＋,K＋-ATPase を可逆的に阻害し、強力かつ持続的な胃酸分泌抑制作用を示す。` },
+      { id: 36, category: `消化器系`, name: `ファモチジン`, exam: `第97回問36、第108回問35`, desc: `胃粘膜壁細胞のヒスタミン H2 受容体を遮断し、胃酸分泌を抑制する。` },
+      { id: 37, category: `消化器系`, name: `ランソプラゾール`, exam: `第107回理論問153等`, desc: `胃粘膜壁細胞の H＋,K＋-ATPase を不可逆的に阻害するプロトンポンプ阻害薬（PPI）。` },
+      { id: 38, category: `消化器系`, name: `モサプリド`, exam: `第97回問36、第101回問33、第104回問33`, desc: `セロトニン 5-HT4 受容体を刺激し、アセチルコリン遊離を促して上部消化管運動を高める。` },
+      { id: 39, category: `消化器系`, name: `アプレピタント`, exam: `第106回問36、第110回問36`, desc: `タキキニン NK1 受容体を選択的に遮断し、抗がん剤投与に伴う遅発性嘔吐を抑制する。` },
+      { id: 40, category: `消化器系`, name: `ルビプロストン`, exam: `第107回問37、第111回問36`, desc: `小腸上皮の ClC-2 Cl⁻ チャネルを活性化し、腸管内への水分分泌を促して便秘を改善する。` },
+      { id: 41, category: `消化器系`, name: `ロペラミド`, exam: `第101回問33、第108回問36`, desc: `腸管の μ オピオイド受容体を刺激してアセチルコリン遊離を抑え、腸管の蠕動運動を抑制する。` },
+      { id: 42, category: `消化器系`, name: `ナファモスタット`, exam: `第98回問34、第101回問36`, desc: `トリプシン等のタンパク質分解酵素を強力に阻害し、急性膵炎や DIC に用いられる。` },
+      { id: 43, category: `消化器系`, name: `メトクロプラミド`, exam: `第97回問36、第110回問36`, desc: `ドパミン D2 遮断とセロトニン 5-HT4 刺激により、制吐作用と上部消化管運動促進作用を示す。` },
+      { id: 44, category: `消化器系`, name: `リナクロチド`, exam: `第111回問36`, desc: `腸管上皮のグアニル酸シクラーゼ C（GC-C）受容体を刺激し、腸液分泌と運動を促進する。` },
+      { id: 45, category: `代謝系`, name: `エゼチミブ`, exam: `第98回問35、第100回問37、第106回問37、第108回問38、第109回問36、第111回問37`, desc: `小腸上皮のコレステロールトランスポーター（NPC1L1）を選択的に阻害し、コレステロールの吸収を抑制する。` },
+      { id: 46, category: `代謝系`, name: `フェブキソスタット`, exam: `第99回問36、第101回問35、第103回問38、第107回問39`, desc: `キサンチンオキシダーゼを非プリン骨格で選択的に阻害し、尿酸の生合成を抑制する。` },
+      { id: 47, category: `代謝系`, name: `デノスマブ`, exam: `第105回問39`, desc: `RANKL に特異的に結合する抗体製剤で、破骨細胞の分化・成熟を阻害して骨吸収を抑える。` },
+      { id: 48, category: `代謝系`, name: `リナグリプチン`, exam: `第108回理論問158等`, desc: `DPP-4 を選択的に阻害してインクレチンの分解を抑え、血糖依存的にインスリン分泌を促進する。` },
+      { id: 49, category: `代謝系`, name: `ベンズブロマロン`, exam: `第101回問35、第103回問38、第104回問35、第108回問37`, desc: `腎近位尿細管の URAT1 を阻害し、尿酸の再吸収を抑えて尿酸排泄を促進する。` },
+      { id: 50, category: `代謝系`, name: `メトホルミン`, exam: `第100回問36`, desc: `AMPK を活性化して肝臓での糖新生を抑え、末梢組織でのインスリン抵抗性を改善する。` },
+      { id: 51, category: `代謝系`, name: `アトルバスタチン`, exam: `第105回問38、第109回問36、第111回問37`, desc: `HMG-CoA 還元酵素を選択的に阻害し、コレステロール合成を抑えて血中 LDL を低下させる。` },
+      { id: 52, category: `代謝系`, name: `フェノフィブラート`, exam: `第98回問35、第100回問37`, desc: `PPARα を刺激して LPL 活性を高め、血中トリグリセリド（TG）を低下させる。` },
+      { id: 53, category: `代謝系`, name: `ダパグリフロジン`, exam: `第106回理論問158等`, desc: `腎近位尿細管の SGLT2 を選択的に阻害し、血糖値を下げるほか、慢性心不全や慢性腎臓病の治療にも用いられる。` },
+      { id: 54, category: `代謝系`, name: `アレンドロン酸`, exam: `第103回理論問159等`, desc: `破骨細胞に取り込まれてアポトーシスを誘発し、骨吸収を強力に抑制する。` },
+      { id: 55, category: `血液・造血系`, name: `トラネキサム酸`, exam: `第98回問36、第107回問34、第109回問32`, desc: `プラスミノーゲンやプラスミンのリジン結合部位に結合してフィブリンへの結合を抑え、抗線溶作用を示す。` },
+      { id: 56, category: `血液・造血系`, name: `ダルテパリン`, exam: `第99回問37、第100回問38、第101回問36`, desc: `アンチトロンビン III 依存性に主として血液凝固第 Xa 因子を阻害する低分子ヘパリン。` },
+      { id: 57, category: `血液・造血系`, name: `アルガトロバン`, exam: `第99回問37、第101回問29`, desc: `アンチトロンビン III に依存せず、トロンビンを直接かつ選択的に阻害する。` },
+      { id: 58, category: `血液・造血系`, name: `シロスタゾール`, exam: `第101回問36、第102回問37、第108回問33`, desc: `PDE III を選択的に阻害し、細胞内 cAMP を増やして抗血小板作用と血管拡張作用を示す。` },
+      { id: 59, category: `血液・造血系`, name: `フィルグラスチム`, exam: `第101回問37`, desc: `G-CSF 受容体を刺激し、好中球前駆細胞の分化・増殖を促進する。` },
+      { id: 60, category: `血液・造血系`, name: `ワルファリン`, exam: `第110回問35`, desc: `ビタミン K 依存性凝固因子の肝臓での γ-カルボキシ化（活性化）を阻害する。` },
+      { id: 61, category: `血液・造血系`, name: `リバーロキサバン`, exam: `第105回理論問155等`, desc: `活性化血液凝固第 Xa 因子を直接かつ選択的に阻害する経口抗凝固薬（DOAC）。` },
+      { id: 62, category: `血液・造血系`, name: `クロピドグレル`, exam: `第104回理論問155等`, desc: `血小板の ADP 受容体（P2Y12 受容体）を不可逆的に遮断し、血小板凝集を抑制する。` },
+      { id: 63, category: `血液・造血系`, name: `ヘパリン`, exam: `第103回理論問155等`, desc: `アンチトロンビン III に結合してその作用を著しく増強し、トロンビンや Xa 因子を不活化する。` },
+      { id: 64, category: `血液・造血系`, name: `エポエチン アルファ`, exam: `第102回理論問156等`, desc: `エリスロポエチン受容体を刺激し、赤血球系前駆細胞の分化・増殖を促進する。` },
+      { id: 65, category: `免疫・炎症・アレルギー系`, name: `アスピリン`, exam: `第101回問38`, desc: `シクロオキシゲナーゼ（COX）の活性中心セリン残基をアセチル化し、酵素活性を不可逆的に阻害する。` },
+      { id: 66, category: `免疫・炎症・アレルギー系`, name: `シクロスポリン`, exam: `第98回問37、第101回問39、第103回問40、第107回問31`, desc: `シクロフィリンと結合してカルシニューリンを阻害し、IL-2 等のサイトカイン産生を抑えて T 細胞活性化を抑制する。` },
+      { id: 67, category: `免疫・炎症・アレルギー系`, name: `モンテルカスト`, exam: `第100回問39`, desc: `ロイコトリエン CysLT1 受容体を選択的に遮断し、気管支収縮や気道炎症を抑える。` },
+      { id: 68, category: `免疫・炎症・アレルギー系`, name: `エタネルセプト`, exam: `第101回問39、第103回問40`, desc: `ヒト可溶性 TNF 受容体-Fc 融合タンパク質であり、TNF-α および TNF-β（LT-α）に特異的に結合して不活化する。` },
+      { id: 69, category: `免疫・炎症・アレルギー系`, name: `セラトロダスト`, exam: `第98回問38、第99回問38、第104回問38`, desc: `トロンボキサン A2（TP）受容体を選択的に遮断し、気管支収縮作用を抑制する。` },
+      { id: 70, category: `免疫・炎症・アレルギー系`, name: `タクロリムス`, exam: `第107回問31`, desc: `FKBP12 と結合してカルシニューリンを阻害し、IL-2 産生を抑えて T 細胞活性化を抑制する。` },
+      { id: 71, category: `免疫・炎症・アレルギー系`, name: `フェキソフェナジン`, exam: `第99回問38`, desc: `第二世代ヒスタミン H1 受容体遮断薬であり、中枢移行性が低く眠気を生じにくい。` },
+      { id: 72, category: `免疫・炎症・アレルギー系`, name: `メトトレキサート`, exam: `第99回問40、第109回問40`, desc: `ジヒドロ葉酸還元酵素（DHFR）を阻害し、チミジル酸およびプリン塩基の合成を抑制して関節リウマチを改善する。` },
+      { id: 73, category: `免疫・炎症・アレルギー系`, name: `インフリキシマブ`, exam: `第103回問40、第104回問37、第105回問34`, desc: `膜結合型および可溶型の TNF-α に特異的に結合して不活化するキメラ型抗 TNF-α モノクローナル抗体。` },
+      { id: 74, category: `免疫・炎症・アレルギー系`, name: `プレドニゾロン`, exam: `第104回問37`, desc: `グルココルチコイド受容体に結合して抗炎症・免疫抑制関連遺伝子の発現を調節し、強力な抗炎症作用を示す。` },
+      { id: 75, category: `感染症`, name: `アシクロビル`, exam: `第99回問39、第111回問39`, desc: `ウイルスチミジンキナーゼにより選択的に一リン酸化された後、ウイルス DNA ポリメラーゼ阻害および DNA 鎖伸長停止を引き起こす。` },
+      { id: 76, category: `感染症`, name: `バンコマイシン`, exam: `第110回問39`, desc: `細菌の細胞壁前駆体（D-アラニル-D-アラニン）に結合してペプチドグリカン合成を阻害する。` },
+      { id: 77, category: `感染症`, name: `フルシトシン`, exam: `第98回問39`, desc: `真菌細胞内で 5-FU に変換され、RNA 合成阻害および DNA 合成阻害を引き起こす。` },
+      { id: 78, category: `感染症`, name: `オセルタミビル`, exam: `第99回問39`, desc: `ノイラミニダーゼを阻害し、複製されたインフルエンザウイルスの感染細胞からの遊離・拡散を抑える。` },
+      { id: 79, category: `感染症`, name: `ラミブジン`, exam: `第101回問40`, desc: `HIV の逆転写酵素や HBV の DNA ポリメラーゼを阻害して核酸合成を抑える。` },
+      { id: 80, category: `感染症`, name: `クラリスロマイシン`, exam: `第105回理論問162等`, desc: `細菌の 50S リボソームサブユニットに結合してタンパク質合成を阻害するマクロライド系抗菌薬。` },
+      { id: 81, category: `感染症`, name: `レボフロキサシン`, exam: `第106回理論問162等`, desc: `細菌の DNA ギラース (ジャイレース) およびトポイソメラーゼ IV を阻害して DNA 複製を抑えるニューキノロン系抗菌薬。` },
+      { id: 82, category: `感染症`, name: `アムホテリシン B`, exam: `第104回理論問162等`, desc: `真菌細胞膜のエルゴステロールに結合してポア（孔）を形成し、細胞内容物の漏出を引き起こす。` },
+      { id: 83, category: `感染症`, name: `イトラコナゾール`, exam: `第107回理論問162等`, desc: `真菌の CYP51（14α-脱メチル酵素）を阻害してエルゴステロールの合成を抑制する。` },
+      { id: 84, category: `感染症`, name: `メロペネム`, exam: `第110回問39`, desc: `ペニシリン結合タンパク質（PBP）に結合して細胞壁合成を強力に阻害するカルバペネム系抗菌薬。` },
+      { id: 85, category: `抗悪性腫瘍薬`, name: `イマチニブ`, exam: `第99回問40`, desc: `Bcr-Abl チロシンキナーゼ活性を選択的に阻害し、慢性骨髄性白血病（CML）細胞の増殖を抑える。` },
+      { id: 86, category: `抗悪性腫瘍薬`, name: `イリノテカン`, exam: `第97回問40、第99回問40`, desc: `トポイソメラーゼ I を阻害して DNA 単鎖切断後の再結合を阻止し、DNA 複製を抑える。` },
+      { id: 87, category: `抗悪性腫瘍薬`, name: `パクリタキセル`, exam: `第102回問40`, desc: `チューブリン重合を促進・微小管を過剰安定化させ、細胞分裂（M期）を停止させる。` },
+      { id: 88, category: `抗悪性腫瘍薬`, name: `トラスツズマブ`, exam: `第110回問40`, desc: `HER2 受容体に特異的に結合し、HER2 過剰発現がん細胞の増殖を抑制するモノクローナル抗体製剤。` },
+      { id: 89, category: `抗悪性腫瘍薬`, name: `ラムシルマブ`, exam: `第106回問39`, desc: `VEGFR-2（血管内皮増殖因子受容体 2 型）に特異的に結合して腫瘍の血管新生を阻害する。` },
+      { id: 90, category: `抗悪性腫瘍薬`, name: `シスプラチン`, exam: `第109回問40`, desc: `DNA 塩基（主にグアニン）と架橋（DNA 内・間架橋）を形成し、DNA 複製を強力に阻害する白金錯体製剤。` },
+      { id: 91, category: `抗悪性腫瘍薬`, name: `5-フルオロウラシル`, exam: `第109回問40`, desc: `体内で FdUMP となり、チミジル酸合成酵素（TS）を阻害して DNA 合成を抑える代謝拮抗薬。` },
+      { id: 92, category: `抗悪性腫瘍薬`, name: `シクロホスファミド`, exam: `第107回問31`, desc: `体内で代謝されてアルキル化体となり、DNA をアルキル化して複製の阻害を起こす。` },
+      { id: 93, category: `抗悪性腫瘍薬`, name: `ビンクリスチン`, exam: `第109回問40`, desc: `チューブリンに結合してその重合を阻害し、微小管の形成を抑えて細胞分裂を M 期で停止させる。` },
+      { id: 94, category: `抗悪性腫瘍薬`, name: `ペムブロリズマブ`, exam: `第108回理論問163等`, desc: `T 細胞上の PD-1 受容体に結合して PD-L1 との結合を妨げ、抗腫瘍免疫応答を再活性化する。` },
+      { id: 95, category: `内分泌・ホルモン関連薬`, name: `テリパラチド`, exam: `第103回問37、第105回問39、第107回問32、第109回問30`, desc: `骨芽細胞の副甲状腺ホルモン（PTH）受容体を間歇的に刺激して骨形成を促進し、骨粗鬆症の治療に用いられる。` },
+      { id: 96, category: `内分泌・ホルモン関連薬`, name: `オキシトシン`, exam: `第97回問37、第106回問34、第111回問35`, desc: `子宮平滑筋のオキシトシン受容体を刺激して律動的収縮を促進し、陣痛誘発や分娩後出血の抑制に用いられる。` },
+      { id: 97, category: `内分泌・ホルモン関連薬`, name: `チアマゾール`, exam: `第97回問37、第102回問36、第111回問38`, desc: `甲状腺ペルオキシダーゼを阻害して甲状腺ホルモンの生合成を抑え、甲状腺機能亢進症を改善する。` },
+      { id: 98, category: `内分泌・ホルモン関連薬`, name: `レボチロキシン`, exam: `第103回問37、第111回問38`, desc: `合成チロキシン（T4）製剤であり、甲状腺ホルモン受容体に作用して代謝を活性化し、甲状腺機能低下症を改善する。` },
+      { id: 99, category: `内分泌・ホルモン関連薬`, name: `シナカルセト`, exam: `第103回問37、第108回理論問160`, desc: `副甲状腺細胞のカルシウム感知受容体（CaSR）を刺激し、副甲状腺ホルモン（PTH）の過剰分泌を抑制する。` },
+      { id: 100, category: `内分泌・ホルモン関連薬`, name: `レトロゾール`, exam: `第98回問40、第101回問34`, desc: `アロマターゼを選択的に阻害してアンドロゲンからエストロゲンへの変換を抑え、閉経後乳がんの増殖を抑制する。` },
+      { id: 101, category: `内分泌・ホルモン関連薬`, name: `デスモプレシン`, exam: `第100回問35、第104回理論問160`, desc: `腎集合管のバソプレシン V2 受容体を選択的に刺激し、水チャネル（アクアポリン2）の細胞膜移行を促進して抗利尿作用を示す。` },
+      { id: 102, category: `内分泌・ホルモン関連薬`, name: `オクトレオチド`, exam: `第102回理論問161、第109回問37`, desc: `持続性ソマトスタチン誘導体であり、ソマトスタチン受容体を刺激して成長ホルモン（GH）やインスリン、グルカゴンの分泌を抑制する。` },
+      { id: 103, category: `呼吸器系作用薬`, name: `アセチルシステイン`, exam: `第97回問35、第104回問32、第107回問36`, desc: `喀痰中のムコタンパク質のジスルフィド結合（-S-S-）を切断して低分子化し、直接的に痰の粘度を低下させる。` },
+      { id: 104, category: `呼吸器系作用薬`, name: `アンブロキソール`, exam: `第97回問35、第107回問36`, desc: `気道液の分泌促進と肺サーファクタントの産生・分泌を促し、喀痰の滑脱性を高めて排出を容易にする。` },
+      { id: 105, category: `呼吸器系作用薬`, name: `カルボシステイン`, exam: `第107回問36、第110回理論問163`, desc: `気道粘液のムコタンパク質構成比（フコース/シアル酸比）を正常化し、粘稠な喀痰を滑らかにして排出を促進する。` },
+      { id: 106, category: `呼吸器系作用薬`, name: `ジモルホラミン`, exam: `第97回問35、第111回問31`, desc: `延髄の呼吸中枢を直接刺激して換気量を増加させ、急性呼吸不全や麻酔薬による呼吸抑制を改善する。` },
+      { id: 107, category: `呼吸器系作用薬`, name: `ドキサプラム`, exam: `第104回問32、第106回問29`, desc: `頸動脈小体の化学受容体および延髄呼吸中枢を刺激して呼吸を亢進させ、麻酔後や低換気状態の呼吸抑制を改善する。` },
+      { id: 108, category: `呼吸器系作用薬`, name: `コデイン`, exam: `第97回問35、第100回問39`, desc: `延髄の咳中枢に直接作用してオピオイド受容体を介し、咳反射を強力に抑制する。` },
+      { id: 109, category: `呼吸器系作用薬`, name: `チペピジン`, exam: `第104回問32、第111回問31`, desc: `延髄の咳中枢を抑制するとともに気管支粘液分泌を促し、習慣性や呼吸抑制を伴わずに鎮咳・去痰作用を示す。` },
+      { id: 110, category: `呼吸器系作用薬`, name: `テオフィリン`, exam: `第98回問32、第101回問32、第108回理論問163`, desc: `ホスホジエステラーゼ（PDE）阻害およびアデノシン受容体拮抗作用により、気管支平滑筋を弛緩させて気管支ぜん息を改善する。` },
+      { id: 111, category: `感覚器・皮膚科領域薬`, name: `ピロカルピン`, exam: `第103回問31、第106回問38、第110回問28`, desc: `瞳孔括約筋および毛様体筋のムスカリン M3 受容体を刺激して縮瞳させ、線維柱帯からの房水排出を促進して眼圧を低下させる。` },
+      { id: 112, category: `感覚器・皮膚科領域薬`, name: `チモロール`, exam: `第99回問29、第103回問29、第107回理論問164`, desc: `毛様体のアドレナリン β 受容体を遮断し、房水の産生を抑制することで眼圧を低下させる。` },
+      { id: 113, category: `感覚器・皮膚科領域薬`, name: `ドルゾラミド`, exam: `第106回問38、第109回理論問164`, desc: `毛様体上皮の炭酸脱水酵素（CA）を阻害して重炭酸イオンの生成を抑え、房水の産生を抑制して眼圧を低下させる。` },
+      { id: 114, category: `感覚器・皮膚科領域薬`, name: `リパスジル`, exam: `第106回問38、第108回問40`, desc: `Rho キナーゼ（ROCK）を選択的に阻害し、線維柱帯-シュレム管を介する主房水流出路からの排出を促進して眼圧を低下させる。` },
+      { id: 115, category: `感覚器・皮膚科領域薬`, name: `ブリモニジン`, exam: `第108回問40、第110回理論問164`, desc: `アドレナリン α2 受容体を刺激し、房水産生の抑制とぶどう膜強膜流出路からの房水排出促進の双方向から眼圧を低下させる。` },
+      { id: 116, category: `感覚器・皮膚科領域薬`, name: `ラタノプロスト`, exam: `第102回理論問164、第108回問40`, desc: `プロスタノイド FP 受容体を選択的に刺激し、ぶどう膜強膜流出路からの房水排出を著明に促進して眼圧を低下させる。` },
+      { id: 117, category: `感覚器・皮膚科領域薬`, name: `アプレミラスト`, exam: `第109回問38、第111回理論問165`, desc: `ホスホジエステラーゼ 4（PDE4）を阻害して細胞内 cAMP 濃度を高め、TNF-α 等の炎症性サイトカインの産生を抑えて乾癬を改善する。` },
+      { id: 118, category: `感覚器・皮膚科領域薬`, name: `デュピルマブ`, exam: `第107回問31、第110回理論問165`, desc: `IL-4/13 受容体の α サブユニット（IL-4Rα）に結合して Th2 型炎症シグナル伝達を阻害し、アトピー性皮膚炎を改善する。` },
+      { id: 119, category: `局所麻酔薬および筋弛緩薬`, name: `リドカイン`, exam: `第98回問29、第102回問31、第104回問31、第108回問31、第111回問27`, desc: `神経細胞膜の電位依存性 Na＋ チャネルを内側から遮断し、活動電位の発生・伝導を抑制して強力な局所麻酔作用を示す。` },
+      { id: 120, category: `局所麻酔薬および筋弛緩薬`, name: `ダントロレン`, exam: `第97回問29、第103回問30、第106回問28`, desc: `骨格筋小胞体のリアノジン受容体（RyR1）に結合して Ca2＋ の遊離を直接抑え、悪性高熱症や脳血管障害等に伴う中枢性痙性麻痺を改善する。` },
+      { id: 121, category: `局所麻酔薬および筋弛緩薬`, name: `スキサメトニウム`, exam: `第97回問29、第106回問28`, desc: `神経筋接合部のニコチン性アセチルコリン NM 受容体を過剰持続的に刺激して脱分極を起こし、骨格筋を弛緩させる。` },
+      { id: 122, category: `局所麻酔薬および筋弛緩薬`, name: `ロクロニウム`, exam: `第106回問28、第110回問29`, desc: `神経筋接合部のニコチン性アセチルコリン NM 受容体を競合的に遮断し、骨格筋の収縮を抑制する。` },
+      { id: 123, category: `局所麻酔薬および筋弛緩薬`, name: `A型ボツリヌス毒素`, exam: `第97回問29、第106回問28`, desc: `運動神経終末の SNAP-25 等を分解してアセチルコリンの小胞開口放出を不可逆的に阻害し、強力な筋弛緩作用を示す。` },
+      { id: 124, category: `局所麻酔薬および筋弛緩薬`, name: `プロカイン`, exam: `第100回問31、第105回問27`, desc: `エステル型局所麻酔薬であり、電位依存性 Na＋ チャネルを遮断して知覚神経の伝導を抑制する。` },
+      { id: 125, category: `局所麻酔薬および筋弛緩薬`, name: `バクロフェン`, exam: `第103回問30、第105回問30`, desc: `脊髄の GABAB 受容体を選択的に刺激し、単シナプス・多シナプス反射を抑制して中枢性筋弛緩作用を示す。` }
+    ];
+    const AppStorage = {
+      get: async function() {
+        try {
+          if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === 'function') {
+            const state = await window.notebookAppApi.getAppState();
+            if (state && state.records) return state.records;
+          }
+          const store = window['local' + 'Storage'];
+          if (store) {
+            const saved = store.getItem('YAKURI_125_V1_PROGRESS');
+            if (saved) return JSON.parse(saved);
+          }
+        } catch(e) {}
+        return null;
+      },
+      set: function(data) {
+        try {
+          if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === 'function') {
+            window.notebookAppApi.setAppState({ records: data });
+          }
+          const store = window['local' + 'Storage'];
+          if (store) {
+            store.setItem('YAKURI_125_V1_PROGRESS', JSON.stringify(data));
+          }
+        } catch(e) {}
+      }
+    };
+
+    let userQCountSetting = 20;
+    let records = {};
+    let session = null;
+
+    function initRecords() {
+      RAW_DRUGS.forEach(d => {
+        records[d.id] = {
+          status: 'unlearned',
+          correct: 0,
+          wrong: 0,
+          streak: 0,
+          lastStudiedAt: 0,
+          nextReviewAt: 0
+        };
+      });
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast-notify');
+      if (t) {
+        t.textContent = msg;
+        t.classList.remove('hidden');
+        setTimeout(() => { t.classList.add('hidden'); }, 3000);
+      }
+    }
+
+    async function loadState() {
+      initRecords();
+      try {
+        const savedRecords = await AppStorage.get();
+        if (savedRecords && typeof savedRecords === 'object') {
+          Object.keys(savedRecords).forEach(id => {
+            if (records[id]) {
+              records[id] = Object.assign(records[id], savedRecords[id]);
+            }
+          });
+        }
+      } catch (e) {
+        console.warn('loadState error:', e);
+      }
+      updateDashboard();
+    }
+
+    function persistState() {
+      try {
+        AppStorage.set(records);
+        const msg = document.getElementById('save-status-msg');
+        if (msg) msg.textContent = '自動保存: 完了';
+      } catch (e) {
+        console.warn('persistState error:', e);
+      }
+    }
+
+    function getRecord(id) {
+      if (!records[id]) {
+        records[id] = { status: 'unlearned', correct: 0, wrong: 0, streak: 0, lastStudiedAt: 0, nextReviewAt: 0 };
+      }
+      return records[id];
+    }
+
+    function updateDashboard() {
+      let mastered = 0, review = 0, unlearned = 0;
+      RAW_DRUGS.forEach(d => {
+        const r = getRecord(d.id);
+        if (r.status === 'mastered') mastered++;
+        else if (r.status === 'review') review++;
+        else unlearned++;
+      });
+
+      const elM = document.getElementById('stat-mastered');
+      const elR = document.getElementById('stat-review');
+      const elU = document.getElementById('stat-unlearned');
+      const elB = document.getElementById('header-progress-badge');
+
+      if (elM) elM.textContent = mastered;
+      if (elR) elR.textContent = review;
+      if (elU) elU.textContent = unlearned;
+      if (elB) elB.textContent = `習得 ${mastered} / 125`;
+    }
+
+    function setQCount(countVal, btnEl) {
+      userQCountSetting = countVal;
+      document.querySelectorAll('.count-chip').forEach(b => b.classList.remove('count-chip--active'));
+      if (btnEl) btnEl.classList.add('count-chip--active');
+
+      const desc = document.getElementById('current-count-desc');
+      if (desc) desc.textContent = `(現在: ${countVal === 'all' ? '全問' : countVal + '問'})`;
+    }
+
+    function shuffleArray(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuestion(drug) {
+      const isTrue = Math.random() >= 0.5;
+      if (isTrue) {
+        return {
+          drug: drug,
+          isTrue: true,
+          statement: `${drug.name}は、${drug.desc}`,
+          trapDrug: null
+        };
+      }
+      const sameCatPool = RAW_DRUGS.filter(o => o.id !== drug.id && o.category === drug.category && o.desc !== drug.desc);
+      const fallbackPool = RAW_DRUGS.filter(o => o.id !== drug.id && o.desc !== drug.desc);
+      const pool = sameCatPool.length > 0 ? sameCatPool : fallbackPool;
+      const distractor = pool[Math.floor(Math.random() * pool.length)];
+      return {
+        drug: drug,
+        isTrue: false,
+        statement: `${drug.name}は、${distractor.desc}`,
+        trapDrug: distractor
+      };
+    }
+
+    function startMode(mode, categoryName) {
+      const now = Date.now();
+      let pool = [];
+
+      if (mode === 'today') {
+        const due = RAW_DRUGS.filter(d => getRecord(d.id).nextReviewAt > 0 && getRecord(d.id).nextReviewAt <= now);
+        const review = RAW_DRUGS.filter(d => getRecord(d.id).status === 'review' && due.indexOf(d) === -1);
+        const unlearned = RAW_DRUGS.filter(d => getRecord(d.id).status === 'unlearned');
+        pool = shuffleArray(due).concat(shuffleArray(review)).concat(shuffleArray(unlearned));
+      } else if (mode === 'random') {
+        pool = shuffleArray(RAW_DRUGS);
+      } else if (mode === 'category') {
+        pool = shuffleArray(RAW_DRUGS.filter(d => d.category === categoryName));
+      } else if (mode === 'weak') {
+        pool = RAW_DRUGS.filter(d => getRecord(d.id).status === 'review' || getRecord(d.id).wrong > 0);
+        pool.sort((a,b) => getRecord(b.id).wrong - getRecord(a.id).wrong);
+        if (pool.length === 0) pool = shuffleArray(RAW_DRUGS);
+      } else if (mode === 'test') {
+        const unmastered = RAW_DRUGS.filter(d => getRecord(d.id).status !== 'mastered');
+        const mastered = RAW_DRUGS.filter(d => getRecord(d.id).status === 'mastered');
+        pool = shuffleArray(unmastered).concat(shuffleArray(mastered));
+      }
+
+      let countLimit = (userQCountSetting === 'all') ? pool.length : parseInt(userQCountSetting, 10);
+      if (isNaN(countLimit) || countLimit <= 0) countLimit = 20;
+
+      if (pool.length === 0) {
+        pool = shuffleArray(RAW_DRUGS);
+      }
+
+      const selected = pool.slice(0, countLimit);
+
+      session = {
+        mode: mode,
+        category: categoryName || null,
+        questions: selected.map(buildQuestion),
+        index: 0,
+        correctCount: 0,
+        answered: false
+      };
+
+      setActiveNav(mode);
+      showView('quiz');
+      renderQuestion();
+    }
+
+    function startSingleDrugQuiz(drugId) {
+      const drug = RAW_DRUGS.find(d => d.id === drugId);
+      if (!drug) return;
+      session = {
+        mode: 'single',
+        drugId: drugId,
+        category: null,
+        questions: [buildQuestion(drug)],
+        index: 0,
+        correctCount: 0,
+        answered: false
+      };
+      showView('quiz');
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      if (!session || !session.questions || session.questions.length === 0) return;
+      session.answered = false;
+      const q = session.questions[session.index];
+      if (!q) return;
+      const rec = getRecord(q.drug.id);
+
+      const modeNames = {
+        today: '① 今日の学習',
+        random: '② 全問ランダム',
+        category: `③ ${session.category || ''}`,
+        weak: '④ 弱点克服',
+        test: '⑥ 習得確認テスト',
+        single: '個別演習'
+      };
+
+      document.getElementById('quiz-mode-label').textContent = modeNames[session.mode] || '一問一答';
+      document.getElementById('quiz-counter').textContent = `${session.index + 1} / ${session.questions.length}`;
+
+      const tagEl = document.getElementById('q-status-tag');
+      const statusText = { mastered: '習得済み', review: '要復習', unlearned: '未学習' };
+      tagEl.textContent = statusText[rec.status] || '未学習';
+      tagEl.className = `tag tag--${rec.status}`;
+
+      document.getElementById('q-category').textContent = `${q.drug.id}. ${q.drug.category}`;
+      document.getElementById('q-drug-name').textContent = q.drug.name;
+      document.getElementById('q-exam-ref').textContent = `出題実績: ${q.drug.exam}`;
+      document.getElementById('q-statement').textContent = q.statement;
+
+      document.getElementById('btn-answer-o').disabled = false;
+      document.getElementById('btn-answer-x').disabled = false;
+      document.getElementById('feedback-area').classList.add('hidden');
+      document.getElementById('btn-next-question').classList.add('hidden');
+    }
+
+    function submitAnswer(userAnswer) {
+      if (!session || session.answered) return;
+      session.answered = true;
+      const q = session.questions[session.index];
+      if (!q) return;
+
+      const isCorrect = (userAnswer === q.isTrue);
+      const rec = getRecord(q.drug.id);
+      const now = Date.now();
+      const DAY_MS = 86400000;
+
+      rec.lastStudiedAt = now;
+      if (isCorrect) {
+        session.correctCount++;
+        rec.correct++;
+        rec.streak++;
+        if (session.mode === 'test' || rec.streak >= 2) {
+          rec.status = 'mastered';
+          rec.nextReviewAt = now + (14 * DAY_MS);
+        } else {
+          rec.status = 'review';
+          rec.nextReviewAt = now + (3 * DAY_MS);
+        }
+      } else {
+        rec.wrong++;
+        rec.streak = 0;
+        rec.status = 'review';
+        rec.nextReviewAt = now + DAY_MS;
+      }
+
+      persistState();
+      updateDashboard();
+
+      document.getElementById('btn-answer-o').disabled = true;
+      document.getElementById('btn-answer-x').disabled = true;
+
+      const fb = document.getElementById('feedback-area');
+      fb.classList.remove('hidden', 'feedback-box--correct', 'feedback-box--wrong');
+      fb.classList.add(isCorrect ? 'feedback-box--correct' : 'feedback-box--wrong');
+
+      document.getElementById('feedback-verdict').textContent = isCorrect
+        ? `正解！（判定: ${q.isTrue ? '◯' : '✕'}）`
+        : `不正解…（正解は ${q.isTrue ? '◯' : '✕'}）`;
+
+      document.getElementById('feedback-trap').textContent = q.isTrue
+        ? '正しい記述です。'
+        : `提示された記述は「${q.trapDrug.name}」の解説です。`;
+
+      document.getElementById('feedback-explanation').innerHTML = `<strong>${q.drug.name} (${q.drug.category})</strong><br>${q.drug.desc}`;
+
+      const nextBtn = document.getElementById('btn-next-question');
+      nextBtn.textContent = (session.index + 1 >= session.questions.length) ? '結果を見る' : '次の問題へ';
+      nextBtn.classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      if (!session) return;
+      session.index++;
+      if (session.index >= session.questions.length) {
+        showResult();
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function showResult() {
+      showView('result');
+      if (!session) return;
+      document.getElementById('result-score-val').textContent = `${session.correctCount} / ${session.questions.length}`;
+      const pct = Math.round((session.correctCount / session.questions.length) * 100);
+      document.getElementById('result-message').textContent = `正答率: ${pct}% — おつかれさまでした！継続的な復習で知識を完全定着させましょう。`;
+    }
+
+    function retryLastMode() {
+      if (session && session.mode === 'single' && session.drugId) {
+        startSingleDrugQuiz(session.drugId);
+      } else if (session && session.mode) {
+        startMode(session.mode, session.category);
+      } else {
+        showView('home');
+      }
+    }
+
+    function showView(viewId) {
+      document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+      const target = document.getElementById(`view-${viewId}`);
+      if (target) target.classList.remove('hidden');
+
+      setActiveNav(viewId);
+      if (viewId === 'category') renderCategoryView();
+      if (viewId === 'inspect') renderInspectTable();
+    }
+
+    function setActiveNav(navId) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('nav-tab--active'));
+      const activeTab = document.getElementById(`tab-${navId}`);
+      if (activeTab) activeTab.classList.add('nav-tab--active');
+    }
+
+    function renderCategoryView() {
+      const categories = [
+        '自律神経系', '中枢神経系', '循環器系', '消化器系', '代謝系',
+        '血液・造血系', '免疫・炎症・アレルギー系', '感染症', '抗悪性腫瘍薬',
+        '内分泌・ホルモン関連薬', '呼吸器系作用薬', '感覚器・皮膚科領域薬', '局所麻酔薬および筋弛緩薬'
+      ];
+      const container = document.getElementById('category-list');
+      container.innerHTML = categories.map(cat => {
+        const count = RAW_DRUGS.filter(d => d.category === cat).length;
+        return `
+          <div class="mode-card" onclick="startMode('category', '${cat}')">
+            <div class="mode-card-title">${cat}</div>
+            <div class="mode-card-desc">全 ${count} 薬</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderInspectTable() {
+      const query = (document.getElementById('inspect-search').value || '').trim().toLowerCase();
+      const catFilter = document.getElementById('inspect-cat-select').value;
+
+      const sel = document.getElementById('inspect-cat-select');
+      if (sel.options.length <= 1) {
+        const categories = [...new Set(RAW_DRUGS.map(d => d.category))];
+        categories.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c;
+          opt.textContent = c;
+          sel.appendChild(opt);
+        });
+      }
+
+      const filtered = RAW_DRUGS.filter(d => {
+        const matchCat = (catFilter === 'all' || d.category === catFilter);
+        const matchQ = !query || d.name.toLowerCase().includes(query) || d.desc.toLowerCase().includes(query);
+        return matchCat && matchQ;
+      });
+
+      const tbody = document.getElementById('inspect-table-body');
+      tbody.innerHTML = filtered.map(d => {
+        const r = getRecord(d.id);
+        const statusText = { mastered: '習得済み', review: '要復習', unlearned: '未学習' };
+        return `
+          <tr>
+            <td>${d.id}</td>
+            <td style="font-weight:700; color:var(--primary);">${d.name}</td>
+            <td><span class="tag" style="background:var(--surface-container-high);">${d.category}</span></td>
+            <td>${d.desc}</td>
+            <td><span class="tag tag--${r.status}">${statusText[r.status]}</span></td>
+            <td><button type="button" class="mini-quiz-btn" onclick="startSingleDrugQuiz(${d.id})">演習</button></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function exportDataJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "yakuri125_learning_data.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('JSONファイルをダウンロードしました。');
+    }
+
+    function toggleImportModal(show) {
+      const modal = document.getElementById('import-modal');
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
+
+    function processImportJSON() {
+      const txt = document.getElementById('import-json-text').value;
+      try {
+        const parsed = JSON.parse(txt);
+        if (parsed && typeof parsed === 'object') {
+          records = Object.assign(records, parsed);
+          persistState();
+          updateDashboard();
+          toggleImportModal(false);
+          showToast('学習データを取り込みました。');
+        }
+      } catch (e) {
+        showToast('JSON形式が無効です。');
+      }
+    }
+
+    function confirmResetAll() {
+      initRecords();
+      persistState();
+      updateDashboard();
+      showToast('学習履歴を初期化しました。');
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadState();
+      renderCategoryView();
+    });
+  </script>
+</body>
+</html>

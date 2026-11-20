@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="tool">
+  <meta name="design-style" content="handbook">
+  <title>薬剤師国家試験 薬理 厳選13薬 お試しデモ Webアプリ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&family=Public+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --background: #ffffff;
+      --surface-container-low: #f8f9fa;
+      --surface-container: #f1f3f5;
+      --surface-container-high: #e9ecef;
+      --on-surface: #0b0c0c;
+      --on-surface-variant: #495057;
+      --outline: #0b0c0c;
+      --outline-variant: #ced4da;
+      --primary: #162e51;
+      --primary-hover: #1e3d6b;
+      --on-primary: #ffffff;
+      --primary-container: #e7f0fa;
+      --on-primary-container: #0c2d4a;
+      --secondary: #4c2c92;
+      --tertiary: #1a569e;
+      --error: #b91c1c;
+      --on-error: #ffffff;
+      --error-bg: #fef2f2;
+      --positive: #0f766e;
+      --positive-bg: #f0fdfa;
+      --warning: #b45309;
+      --warning-bg: #fffbeb;
+      --focus: #ffdd00;
+
+      --font-family: 'Noto Sans JP', 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --rounded: 4px;
+      --rounded-lg: 8px;
+
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-family);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 40px;
+    }
+
+    .app-shell {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-md);
+    }
+
+    .index-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-xs) 0;
+      border-bottom: 2px solid var(--primary);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .brand-bar {
+      margin: var(--space-md) 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .brand-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    .brand-sub {
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+    }
+
+    .nav-strip {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      padding-bottom: var(--space-xs);
+      margin-bottom: var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .nav-tab {
+      padding: 8px 14px;
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      border-bottom: none;
+      border-radius: var(--rounded) var(--rounded) 0 0;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .nav-tab:hover { background: var(--surface-container); }
+    .nav-tab--active {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    .setting-bar {
+      background: var(--primary-container);
+      border: 1px solid var(--primary);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .setting-label {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--on-primary-container);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .count-chip-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .count-chip {
+      padding: 4px 12px;
+      border: 1px solid var(--primary);
+      background: #ffffff;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 16px;
+      cursor: pointer;
+    }
+
+    .count-chip:hover { background: var(--surface-container); }
+    .count-chip--active {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+
+    .stat-tile {
+      padding: var(--space-md);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      background: var(--surface-container-low);
+      text-align: center;
+    }
+
+    .stat-tile--mastered { border-left: 4px solid var(--positive); }
+    .stat-tile--review { border-left: 4px solid var(--warning); }
+    .stat-tile--unlearned { border-left: 4px solid var(--on-surface-variant); }
+
+    .stat-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--on-surface-variant);
+    }
+
+    .stat-val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--on-surface);
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+
+    .mode-card {
+      padding: var(--space-md);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded-lg);
+      background: #ffffff;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .mode-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(22, 46, 81, 0.12);
+    }
+
+    .mode-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .mode-card-desc {
+      font-size: 0.8rem;
+      color: var(--on-surface-variant);
+    }
+
+    .btn-primary {
+      padding: 12px 20px;
+      background: var(--primary);
+      color: var(--on-primary);
+      border: none;
+      border-radius: var(--rounded);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-secondary {
+      padding: 10px 16px;
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .btn-secondary:hover { background: var(--surface-container); }
+
+    .quiz-card {
+      background: #ffffff;
+      border: 2px solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-md);
+    }
+
+    .quiz-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+      padding-bottom: var(--space-xs);
+      border-bottom: 1px solid var(--surface-container);
+    }
+
+    .quiz-mode-tag {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--primary);
+    }
+
+    .quiz-counter {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--on-surface-variant);
+    }
+
+    .q-drug-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: var(--space-xs);
+    }
+
+    .q-exam-ref {
+      font-size: 0.8rem;
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-md);
+    }
+
+    .q-statement-box {
+      background: var(--surface-container-low);
+      padding: var(--space-md);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--rounded);
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: var(--space-lg);
+      line-height: 1.7;
+    }
+
+    .answer-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .btn-choice {
+      padding: 18px;
+      border: 2px solid var(--outline-variant);
+      border-radius: var(--rounded-lg);
+      background: #ffffff;
+      font-size: 1.8rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-choice--circle {
+      color: var(--positive);
+      border-color: var(--positive);
+    }
+    .btn-choice--circle:hover { background: var(--positive-bg); }
+
+    .btn-choice--cross {
+      color: var(--error);
+      border-color: var(--error);
+    }
+    .btn-choice--cross:hover { background: var(--error-bg); }
+
+    .btn-choice:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .feedback-box {
+      padding: var(--space-md);
+      border-radius: var(--rounded);
+      margin-bottom: var(--space-md);
+    }
+
+    .feedback-box--correct {
+      background: var(--positive-bg);
+      border: 1.5px solid var(--positive);
+    }
+
+    .feedback-box--wrong {
+      background: var(--error-bg);
+      border: 1.5px solid var(--error);
+    }
+
+    .feedback-verdict {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: var(--space-xs);
+    }
+
+    .feedback-box--correct .feedback-verdict { color: var(--positive); }
+    .feedback-box--wrong .feedback-verdict { color: var(--error); }
+
+    .feedback-trap {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: var(--space-xs);
+    }
+
+    .feedback-explanation {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--on-surface);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .tag--mastered { background: #d1fae5; color: #065f46; }
+    .tag--review { background: #fef3c7; color: #92400e; }
+    .tag--unlearned { background: #e5e7eb; color: #374151; }
+
+    .search-filter-box {
+      display: flex;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+      flex-wrap: wrap;
+    }
+
+    .input-text {
+      flex: 1;
+      min-width: 200px;
+      padding: 8px 12px;
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      font-size: 0.9rem;
+    }
+
+    .select-cat {
+      padding: 8px 12px;
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      font-size: 0.9rem;
+      background: #ffffff;
+    }
+
+    .drug-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: var(--space-md);
+      font-size: 0.85rem;
+    }
+
+    .drug-table th, .drug-table td {
+      padding: 10px 12px;
+      border: 1px solid var(--outline-variant);
+      text-align: left;
+    }
+
+    .drug-table th {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      font-weight: 700;
+    }
+
+    .drug-table tr:nth-child(even) {
+      background: var(--surface-container-low);
+    }
+
+    .mini-quiz-btn {
+      padding: 4px 8px;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-md);
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      padding: var(--space-lg);
+      border-radius: var(--rounded-lg);
+      max-width: 540px;
+      width: 100%;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .textarea-json {
+      width: 100%;
+      height: 140px;
+      padding: var(--space-sm);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      font-family: monospace;
+      font-size: 0.8rem;
+      margin-bottom: var(--space-md);
+    }
+
+    .toast-msg {
+      padding: 8px 12px;
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border-radius: var(--rounded);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 640px) {
+      .stats-row { grid-template-columns: 1fr; }
+      .mode-grid { grid-template-columns: 1fr; }
+      .drug-table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="index-header">
+      <span>薬剤師国家試験 薬理分野 13分野厳選デモ</span>
+      <span id="header-progress-badge">習得 0 / 13 (お試し版)</span>
+    </div>
+
+    <header class="brand-bar">
+      <div>
+        <h1 class="brand-title">頻出13薬 ◯✕一問一答 【お試しデモ版】</h1>
+        <p class="brand-sub">第97回〜第111回 分析データ収録・品質検証済み完成版</p>
+      </div>
+      <button type="button" class="btn-secondary" id="btn-home" onclick="showView('home')">ホーム</button>
+    </header>
+
+    <div class="setting-bar">
+      <div class="setting-label">
+        <span>⚡ 出題数の設定:</span>
+        <span id="current-count-desc" style="font-size:0.8rem; color:var(--on-primary-container);">(現在: 3問)</span>
+      </div>
+      <div class="count-chip-group">
+        <button type="button" class="count-chip count-chip--active" onclick="setQCount(3, this)">3問</button>
+        <button type="button" class="count-chip" onclick="setQCount(5, this)">5問</button>
+        <button type="button" class="count-chip" onclick="setQCount('all', this)">全13問</button>
+      </div>
+    </div>
+
+    <nav class="nav-strip" aria-label="学習モード切替">
+      <button type="button" class="nav-tab nav-tab--active" id="tab-home" onclick="showView('home')">ホーム</button>
+      <button type="button" class="nav-tab" id="tab-today" onclick="startMode('today')">①今日の学習</button>
+      <button type="button" class="nav-tab" id="tab-random" onclick="startMode('random')">②全問ランダム</button>
+      <button type="button" class="nav-tab" id="tab-category" onclick="showView('category')">③単元別学習</button>
+      <button type="button" class="nav-tab" id="tab-weak" onclick="startMode('weak')">④弱点克服</button>
+      <button type="button" class="nav-tab" id="tab-inspect" onclick="showView('inspect')">⑤13薬剤総点検</button>
+      <button type="button" class="nav-tab" id="tab-test" onclick="startMode('test')">⑥習得確認テスト</button>
+    </nav>
+
+    <main class="main-area">
+      <!-- HOME VIEW -->
+      <section id="view-home">
+        <div class="stats-row">
+          <div class="stat-tile stat-tile--mastered">
+            <span class="stat-label">習得確認済み</span>
+            <span class="stat-val" id="stat-mastered">0</span>
+          </div>
+          <div class="stat-tile stat-tile--review">
+            <span class="stat-label">要復習</span>
+            <span class="stat-val" id="stat-review">0</span>
+          </div>
+          <div class="stat-tile stat-tile--unlearned">
+            <span class="stat-label">未学習</span>
+            <span class="stat-val" id="stat-unlearned">13</span>
+          </div>
+        </div>
+
+        <div id="toast-notify" class="toast-msg hidden" style="margin-bottom:var(--space-md);"></div>
+
+        <h2 style="font-size:1.1rem; font-weight:800; color:var(--primary); margin-bottom:var(--space-sm);">学習モード選択</h2>
+        <div class="mode-grid">
+          <div class="mode-card" onclick="startMode('today')">
+            <div class="mode-card-title">① 今日の学習</div>
+            <div class="mode-card-desc">復習期日の来た薬剤・弱点・未学習薬を自動抽出</div>
+          </div>
+          <div class="mode-card" onclick="startMode('random')">
+            <div class="mode-card-title">② 全問ランダム</div>
+            <div class="mode-card-desc">全13薬からランダムに出題</div>
+          </div>
+          <div class="mode-card" onclick="showView('category')">
+            <div class="mode-card-title">③ 単元別学習</div>
+            <div class="mode-card-desc">自律神経・中枢神経など13分類ごとに演習</div>
+          </div>
+          <div class="mode-card" onclick="startMode('weak')">
+            <div class="mode-card-title">④ 弱点克服</div>
+            <div class="mode-card-desc">誤答履歴のある要復習薬を優先出題</div>
+          </div>
+          <div class="mode-card" onclick="showView('inspect')">
+            <div class="mode-card-title">⑤ 13薬剤総点検</div>
+            <div class="mode-card-desc">全13薬の1文まとめ一覧閲覧 & 個別演習</div>
+          </div>
+          <div class="mode-card" onclick="startMode('test')">
+            <div class="mode-card-title">⑥ 習得確認テスト</div>
+            <div class="mode-card-desc">習得判定を行う総仕上げテスト</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CATEGORY SELECTION VIEW -->
+      <section id="view-category" class="hidden">
+        <h2 style="font-size:1.1rem; font-weight:800; color:var(--primary); margin-bottom:var(--space-sm);">単元（分類）を選択</h2>
+        <div id="category-list" style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:var(--space-sm);"></div>
+      </section>
+
+      <!-- INSPECTOR / SUMMARY VIEW -->
+      <section id="view-inspect" class="hidden">
+        <h2 style="font-size:1.1rem; font-weight:800; color:var(--primary); margin-bottom:var(--space-sm);">全125薬剤 1文まとめ総点検一覧</h2>
+        <div class="search-filter-box">
+          <input type="text" id="inspect-search" class="input-text" placeholder="薬剤名・作用機序で検索..." oninput="renderInspectTable()">
+          <select id="inspect-cat-select" class="select-cat" onchange="renderInspectTable()">
+            <option value="all">すべての単元 (13分類)</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="drug-table">
+            <thead>
+              <tr>
+                <th style="width:50px;">No.</th>
+                <th style="width:130px;">薬剤名</th>
+                <th style="width:120px;">分類</th>
+                <th>1文まとめ (作用機序・主要標的)</th>
+                <th style="width:80px;">状態</th>
+                <th style="width:70px;">操作</th>
+              </tr>
+            </thead>
+            <tbody id="inspect-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- QUIZ VIEW -->
+      <section id="view-quiz" class="hidden">
+        <div class="quiz-card">
+          <div class="quiz-meta">
+            <span class="quiz-mode-tag" id="quiz-mode-label">演習モード</span>
+            <span class="quiz-counter" id="quiz-counter">1 / 20</span>
+          </div>
+          <div>
+            <span id="q-status-tag" class="tag tag--unlearned">未学習</span>
+            <span id="q-category" style="font-size:0.85rem; font-weight:700; color:var(--on-surface-variant); margin-left:8px;">自律神経系</span>
+          </div>
+          <div class="q-drug-title" id="q-drug-name">ベタネコール</div>
+          <div class="q-exam-ref" id="q-exam-ref">出題実績: 第99回問28...</div>
+
+          <div class="q-statement-box" id="q-statement">
+            ベタネコールは、ムスカリン性アセチルコリン受容体（主に M3 受容体）を選択的に刺激し...
+          </div>
+
+          <div class="answer-btn-grid">
+            <button type="button" class="btn-choice btn-choice--circle" id="btn-answer-o" onclick="submitAnswer(true)">
+              <span>◯</span> 正しい
+            </button>
+            <button type="button" class="btn-choice btn-choice--cross" id="btn-answer-x" onclick="submitAnswer(false)">
+              <span>✕</span> 誤り
+            </button>
+          </div>
+
+          <div id="feedback-area" class="feedback-box hidden">
+            <div class="feedback-verdict" id="feedback-verdict">正解！</div>
+            <div class="feedback-trap" id="feedback-trap"></div>
+            <div class="feedback-explanation" id="feedback-explanation"></div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; margin-top:var(--space-md);">
+            <button type="button" class="btn-primary hidden" id="btn-next-question" onclick="nextQuestion()">次の問題へ</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESULT VIEW -->
+      <section id="view-result" class="hidden">
+        <div class="quiz-card" style="text-align:center;">
+          <h2 style="font-size:1.4rem; font-weight:800; color:var(--primary); margin-bottom:var(--space-sm);">演習完了！</h2>
+          <div style="font-size:2.2rem; font-weight:800; color:var(--primary); margin-bottom:var(--space-sm);" id="result-score-val">18 / 20</div>
+          <p id="result-message" style="font-weight:700; color:var(--on-surface-variant); margin-bottom:var(--space-md);"></p>
+          <div style="display:flex; gap:var(--space-sm); justify-content:center;">
+            <button type="button" class="btn-secondary" onclick="showView('home')">ホームに戻る</button>
+            <button type="button" class="btn-primary" onclick="retryLastMode()">もう一度挑戦</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Data Management Modal -->
+    <div id="import-modal" class="modal-backdrop hidden">
+      <div class="modal-content">
+        <div class="modal-title">学習データの引き継ぎ (JSON)</div>
+        <p style="font-size:0.85rem; color:var(--on-surface-variant); margin-bottom:var(--space-sm);">
+          バックアップした学習データ (JSON) を貼り付けてインポートできます。
+        </p>
+        <textarea id="import-json-text" class="textarea-json" placeholder="ここにJSONテキストを貼り付け..."></textarea>
+        <div style="display:flex; gap:var(--space-sm); justify-content:flex-end;">
+          <button type="button" class="btn-secondary" onclick="toggleImportModal(false)">キャンセル</button>
+          <button type="button" class="btn-primary" onclick="processImportJSON()">インポート実行</button>
+        </div>
+      </div>
+    </div>
+
+    <footer style="margin-top:var(--space-xl); padding-top:var(--space-md); border-top:1px solid var(--outline-variant); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-sm); font-size:0.8rem; color:var(--on-surface-variant);">
+      <div>出典: 薬剤師国家試験 薬理分野分析データ（厳選13薬デモ版）</div>
+      <div style="display:flex; gap:var(--space-xs); align-items:center;">
+        <span id="save-status-msg" style="font-weight:700; color:var(--positive);">自動保存: 有効</span>
+        <button type="button" class="btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="exportDataJSON()">JSON出力</button>
+        <button type="button" class="btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="toggleImportModal(true)">JSON入力</button>
+        <button type="button" class="btn-secondary" style="padding:4px 8px; font-size:0.75rem; color:var(--error);" onclick="confirmResetAll()">履歴リセット</button>
+      </div>
+    </footer>
+  </div>
+
+  <api-shim></api-shim>
+  <script>
+const RAW_DRUGS = [
+      { id: 1, category: `自律神経系`, name: `ベタネコール`, exam: `第99回問28、第100回問26、第101回問33`, desc: `ムスカリン性アセチルコリン受容体（主に M3 受容体）を選択的に刺激し、消化管や膀胱（排尿筋）の運動を亢進させる。` },
+      { id: 2, category: `中枢神経系`, name: `バルプロ酸`, exam: `第97回問31、第102回問30`, desc: `GABAトランスアミナーゼを阻害して脳内GABAの分解を抑え、全般発作の第一選択薬となる。` },
+      { id: 3, category: `循環器系`, name: `ジゴキシン`, exam: `第99回問32、第101回問32、第103回問34`, desc: `心筋の Na＋,K＋-ATPase を阻害し、細胞内 Ca2＋ 濃度を高めて強心作用を示す。` },
+      { id: 4, category: `消化器系`, name: `ボノプラザン`, exam: `第103回問36、第107回問36`, desc: `K＋ と競合して H＋,K＋-ATPase を可逆的に阻害し、強力かつ持続的な胃酸分泌抑制作用を示す。` },
+      { id: 5, category: `代謝系`, name: `エゼチミブ`, exam: `第100回問36、第104回問36`, desc: `小腸上皮のコレステロールトランスポーター（NPC1L1）を選択的に阻害し、コレステロールの吸収を抑制する。` },
+      { id: 6, category: `血液・造血系`, name: `トラネキサム酸`, exam: `第101回問37、第104回問37`, desc: `プラスミノーゲンやプラスミンのリジン結合部位に結合してフィブリンへの結合を抑え、抗線溶作用を示す。` },
+      { id: 7, category: `免疫・炎症・アレルギー系`, name: `アスピリン`, exam: `第101回問38`, desc: `シクロオキシゲナーゼ（COX）の活性中心セリン残基をアセチル化し、酵素活性を不可逆的に阻害する。` },
+      { id: 8, category: `感染症`, name: `アシクロビル`, exam: `第99回問39、第111回問39`, desc: `ウイルスチミジンキナーゼにより選択的に一リン酸化された後、ウイルス DNA ポリメラーゼ阻害および DNA 鎖伸長停止を引き起こす。` },
+      { id: 9, category: `抗悪性腫瘍薬`, name: `イマチニブ`, exam: `第99回問40`, desc: `Bcr-Abl チロシンキナーゼ活性を選択的に阻害し、慢性骨髄性白血病（CML）細胞の増殖を抑える。` },
+      { id: 10, category: `内分泌・ホルモン関連薬`, name: `テリパラチド`, exam: `第101回問35、第105回問35`, desc: `骨芽細胞の副甲状腺ホルモン（PTH）受容体を間歇的に刺激して骨形成を促進し、骨粗鬆症の治療に用いられる。` },
+      { id: 11, category: `呼吸器系作用薬`, name: `アセチルシステイン`, exam: `第102回問36、第106回問36`, desc: `喀痰中のムコタンパク質のジスルフィド結合（-S-S-）を切断して低分子化し、直接的に痰の粘度を低下させる。` },
+      { id: 12, category: `感覚器・皮膚科領域薬`, name: `ピロカルピン`, exam: `第99回問33、第105回問33`, desc: `瞳孔括約筋および毛様体筋のムスカリン M3 受容体を刺激して縮瞳させ、線維柱帯からの房水排出を促進して眼圧を低下させる。` },
+      { id: 13, category: `局所麻酔薬および筋弛緩薬`, name: `リドカイン`, exam: `第98回問31、第104回問31`, desc: `神経細胞膜の電位依存性 Na＋ チャネルを内側から遮断し、活動電位の発生・伝導を抑制して強力な局所麻酔作用を示す。` }
+    ];
+    const AppStorage = {
+      get: async function() {
+        try {
+          if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === 'function') {
+            const state = await window.notebookAppApi.getAppState();
+            if (state && state.records) return state.records;
+          }
+          const store = window['local' + 'Storage'];
+          if (store) {
+            const saved = store.getItem('YAKURI_13_DEMO_V1_PROGRESS');
+            if (saved) return JSON.parse(saved);
+          }
+        } catch(e) {}
+        return null;
+      },
+      set: function(data) {
+        try {
+          if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === 'function') {
+            window.notebookAppApi.setAppState({ records: data });
+          }
+          const store = window['local' + 'Storage'];
+          if (store) {
+            store.setItem('YAKURI_13_DEMO_V1_PROGRESS', JSON.stringify(data));
+          }
+        } catch(e) {}
+      }
+    };
+
+    let userQCountSetting = 3;
+    let records = {};
+    let session = null;
+
+    function initRecords() {
+      RAW_DRUGS.forEach(d => {
+        records[d.id] = {
+          status: 'unlearned',
+          correct: 0,
+          wrong: 0,
+          streak: 0,
+          lastStudiedAt: 0,
+          nextReviewAt: 0
+        };
+      });
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast-notify');
+      if (t) {
+        t.textContent = msg;
+        t.classList.remove('hidden');
+        setTimeout(() => { t.classList.add('hidden'); }, 3000);
+      }
+    }
+
+    async function loadState() {
+      initRecords();
+      try {
+        const savedRecords = await AppStorage.get();
+        if (savedRecords && typeof savedRecords === 'object') {
+          Object.keys(savedRecords).forEach(id => {
+            if (records[id]) {
+              records[id] = Object.assign(records[id], savedRecords[id]);
+            }
+          });
+        }
+      } catch (e) {
+        console.warn('loadState error:', e);
+      }
+      updateDashboard();
+    }
+
+    function persistState() {
+      try {
+        AppStorage.set(records);
+        const msg = document.getElementById('save-status-msg');
+        if (msg) msg.textContent = '自動保存: 完了';
+      } catch (e) {
+        console.warn('persistState error:', e);
+      }
+    }
+
+    function getRecord(id) {
+      if (!records[id]) {
+        records[id] = { status: 'unlearned', correct: 0, wrong: 0, streak: 0, lastStudiedAt: 0, nextReviewAt: 0 };
+      }
+      return records[id];
+    }
+
+    function updateDashboard() {
+      let mastered = 0, review = 0, unlearned = 0;
+      RAW_DRUGS.forEach(d => {
+        const r = getRecord(d.id);
+        if (r.status === 'mastered') mastered++;
+        else if (r.status === 'review') review++;
+        else unlearned++;
+      });
+
+      const elM = document.getElementById('stat-mastered');
+      const elR = document.getElementById('stat-review');
+      const elU = document.getElementById('stat-unlearned');
+      const elB = document.getElementById('header-progress-badge');
+
+      if (elM) elM.textContent = mastered;
+      if (elR) elR.textContent = review;
+      if (elU) elU.textContent = unlearned;
+      if (elB) elB.textContent = `習得 ${mastered} / 13 (お試し版)`;
+    }
+
+    function setQCount(countVal, btnEl) {
+      userQCountSetting = countVal;
+      document.querySelectorAll('.count-chip').forEach(b => b.classList.remove('count-chip--active'));
+      if (btnEl) btnEl.classList.add('count-chip--active');
+
+      const desc = document.getElementById('current-count-desc');
+      if (desc) desc.textContent = `(現在: ${countVal === 'all' ? '全問' : countVal + '問'})`;
+    }
+
+    function shuffleArray(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuestion(drug) {
+      const isTrue = Math.random() >= 0.5;
+      if (isTrue) {
+        return {
+          drug: drug,
+          isTrue: true,
+          statement: `${drug.name}は、${drug.desc}`,
+          trapDrug: null
+        };
+      }
+      const sameCatPool = RAW_DRUGS.filter(o => o.id !== drug.id && o.category === drug.category && o.desc !== drug.desc);
+      const fallbackPool = RAW_DRUGS.filter(o => o.id !== drug.id && o.desc !== drug.desc);
+      const pool = sameCatPool.length > 0 ? sameCatPool : fallbackPool;
+      const distractor = pool[Math.floor(Math.random() * pool.length)];
+      return {
+        drug: drug,
+        isTrue: false,
+        statement: `${drug.name}は、${distractor.desc}`,
+        trapDrug: distractor
+      };
+    }
+
+    function startMode(mode, categoryName) {
+      const now = Date.now();
+      let pool = [];
+
+      if (mode === 'today') {
+        const due = RAW_DRUGS.filter(d => getRecord(d.id).nextReviewAt > 0 && getRecord(d.id).nextReviewAt <= now);
+        const review = RAW_DRUGS.filter(d => getRecord(d.id).status === 'review' && due.indexOf(d) === -1);
+        const unlearned = RAW_DRUGS.filter(d => getRecord(d.id).status === 'unlearned');
+        pool = shuffleArray(due).concat(shuffleArray(review)).concat(shuffleArray(unlearned));
+      } else if (mode === 'random') {
+        pool = shuffleArray(RAW_DRUGS);
+      } else if (mode === 'category') {
+        pool = shuffleArray(RAW_DRUGS.filter(d => d.category === categoryName));
+      } else if (mode === 'weak') {
+        pool = RAW_DRUGS.filter(d => getRecord(d.id).status === 'review' || getRecord(d.id).wrong > 0);
+        pool.sort((a,b) => getRecord(b.id).wrong - getRecord(a.id).wrong);
+        if (pool.length === 0) pool = shuffleArray(RAW_DRUGS);
+      } else if (mode === 'test') {
+        const unmastered = RAW_DRUGS.filter(d => getRecord(d.id).status !== 'mastered');
+        const mastered = RAW_DRUGS.filter(d => getRecord(d.id).status === 'mastered');
+        pool = shuffleArray(unmastered).concat(shuffleArray(mastered));
+      }
+
+      if (pool.length === 0) {
+        pool = shuffleArray(RAW_DRUGS);
+      }
+
+      let countLimit = (userQCountSetting === 'all') ? pool.length : parseInt(userQCountSetting, 10);
+      if (isNaN(countLimit) || countLimit <= 0) countLimit = 20;
+
+      const selected = pool.slice(0, countLimit);
+
+      session = {
+        mode: mode,
+        category: categoryName || null,
+        questions: selected.map(buildQuestion),
+        index: 0,
+        correctCount: 0,
+        answered: false
+      };
+
+      setActiveNav(mode);
+      showView('quiz');
+      renderQuestion();
+    }
+
+    function startSingleDrugQuiz(drugId) {
+      const drug = RAW_DRUGS.find(d => d.id === drugId);
+      if (!drug) return;
+      session = {
+        mode: 'single',
+        drugId: drugId,
+        category: null,
+        questions: [buildQuestion(drug)],
+        index: 0,
+        correctCount: 0,
+        answered: false
+      };
+      showView('quiz');
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      if (!session || !session.questions || session.questions.length === 0) return;
+      session.answered = false;
+      const q = session.questions[session.index];
+      if (!q) return;
+      const rec = getRecord(q.drug.id);
+
+      const modeNames = {
+        today: '① 今日の学習',
+        random: '② 全問ランダム',
+        category: `③ ${session.category || ''}`,
+        weak: '④ 弱点克服',
+        test: '⑥ 習得確認テスト',
+        single: '個別演習'
+      };
+
+      document.getElementById('quiz-mode-label').textContent = modeNames[session.mode] || '一問一答';
+      document.getElementById('quiz-counter').textContent = `${session.index + 1} / ${session.questions.length}`;
+
+      const tagEl = document.getElementById('q-status-tag');
+      const statusText = { mastered: '習得済み', review: '要復習', unlearned: '未学習' };
+      tagEl.textContent = statusText[rec.status] || '未学習';
+      tagEl.className = `tag tag--${rec.status}`;
+
+      document.getElementById('q-category').textContent = `${q.drug.id}. ${q.drug.category}`;
+      document.getElementById('q-drug-name').textContent = q.drug.name;
+      document.getElementById('q-exam-ref').textContent = `出題実績: ${q.drug.exam}`;
+      document.getElementById('q-statement').textContent = q.statement;
+
+      document.getElementById('btn-answer-o').disabled = false;
+      document.getElementById('btn-answer-x').disabled = false;
+      document.getElementById('feedback-area').classList.add('hidden');
+      document.getElementById('btn-next-question').classList.add('hidden');
+    }
+
+    function submitAnswer(userAnswer) {
+      if (!session || session.answered) return;
+      session.answered = true;
+      const q = session.questions[session.index];
+      if (!q) return;
+
+      const isCorrect = (userAnswer === q.isTrue);
+      const rec = getRecord(q.drug.id);
+      const now = Date.now();
+      const DAY_MS = 86400000;
+
+      rec.lastStudiedAt = now;
+      if (isCorrect) {
+        session.correctCount++;
+        rec.correct++;
+        rec.streak++;
+        if (session.mode === 'test' || rec.streak >= 2) {
+          rec.status = 'mastered';
+          rec.nextReviewAt = now + (14 * DAY_MS);
+        } else {
+          rec.status = 'review';
+          rec.nextReviewAt = now + (3 * DAY_MS);
+        }
+      } else {
+        rec.wrong++;
+        rec.streak = 0;
+        rec.status = 'review';
+        rec.nextReviewAt = now + DAY_MS;
+      }
+
+      persistState();
+      updateDashboard();
+
+      document.getElementById('btn-answer-o').disabled = true;
+      document.getElementById('btn-answer-x').disabled = true;
+
+      const fb = document.getElementById('feedback-area');
+      fb.classList.remove('hidden', 'feedback-box--correct', 'feedback-box--wrong');
+      fb.classList.add(isCorrect ? 'feedback-box--correct' : 'feedback-box--wrong');
+
+      document.getElementById('feedback-verdict').textContent = isCorrect
+        ? `正解！（判定: ${q.isTrue ? '◯' : '✕'}）`
+        : `不正解…（正解は ${q.isTrue ? '◯' : '✕'}）`;
+
+      document.getElementById('feedback-trap').textContent = q.isTrue
+        ? '正しい記述です。'
+        : `提示された記述は「${q.trapDrug.name}」の解説です。`;
+
+      document.getElementById('feedback-explanation').innerHTML = `<strong>${q.drug.name} (${q.drug.category})</strong><br>${q.drug.desc}`;
+
+      const nextBtn = document.getElementById('btn-next-question');
+      nextBtn.textContent = (session.index + 1 >= session.questions.length) ? '結果を見る' : '次の問題へ';
+      nextBtn.classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      if (!session) return;
+      session.index++;
+      if (session.index >= session.questions.length) {
+        showResult();
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function showResult() {
+      showView('result');
+      if (!session) return;
+      document.getElementById('result-score-val').textContent = `${session.correctCount} / ${session.questions.length}`;
+      const pct = Math.round((session.correctCount / session.questions.length) * 100);
+      document.getElementById('result-message').textContent = `正答率: ${pct}% — おつかれさまでした！継続的な復習で知識を完全定着させましょう。`;
+    }
+
+    function retryLastMode() {
+      if (session && session.mode === 'single' && session.drugId) {
+        startSingleDrugQuiz(session.drugId);
+      } else if (session && session.mode) {
+        startMode(session.mode, session.category);
+      } else {
+        showView('home');
+      }
+    }
+
+    function showView(viewId) {
+      document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+      const target = document.getElementById(`view-${viewId}`);
+      if (target) target.classList.remove('hidden');
+
+      setActiveNav(viewId);
+      if (viewId === 'category') renderCategoryView();
+      if (viewId === 'inspect') renderInspectTable();
+    }
+
+    function setActiveNav(navId) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('nav-tab--active'));
+      const activeTab = document.getElementById(`tab-${navId}`);
+      if (activeTab) activeTab.classList.add('nav-tab--active');
+    }
+
+    function renderCategoryView() {
+      const categories = [
+        '自律神経系', '中枢神経系', '循環器系', '消化器系', '代謝系',
+        '血液・造血系', '免疫・炎症・アレルギー系', '感染症', '抗悪性腫瘍薬',
+        '内分泌・ホルモン関連薬', '呼吸器系作用薬', '感覚器・皮膚科領域薬', '局所麻酔薬および筋弛緩薬'
+      ];
+      const container = document.getElementById('category-list');
+      container.innerHTML = categories.map(cat => {
+        const count = RAW_DRUGS.filter(d => d.category === cat).length;
+        return `
+          <div class="mode-card" onclick="startMode('category', '${cat}')">
+            <div class="mode-card-title">${cat}</div>
+            <div class="mode-card-desc">全 ${count} 薬</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderInspectTable() {
+      const query = (document.getElementById('inspect-search').value || '').trim().toLowerCase();
+      const catFilter = document.getElementById('inspect-cat-select').value;
+
+      const sel = document.getElementById('inspect-cat-select');
+      if (sel.options.length <= 1) {
+        const categories = [...new Set(RAW_DRUGS.map(d => d.category))];
+        categories.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c;
+          opt.textContent = c;
+          sel.appendChild(opt);
+        });
+      }
+
+      const filtered = RAW_DRUGS.filter(d => {
+        const matchCat = (catFilter === 'all' || d.category === catFilter);
+        const matchQ = !query || d.name.toLowerCase().includes(query) || d.desc.toLowerCase().includes(query);
+        return matchCat && matchQ;
+      });
+
+      const tbody = document.getElementById('inspect-table-body');
+      tbody.innerHTML = filtered.map(d => {
+        const r = getRecord(d.id);
+        const statusText = { mastered: '習得済み', review: '要復習', unlearned: '未学習' };
+        return `
+          <tr>
+            <td>${d.id}</td>
+            <td style="font-weight:700; color:var(--primary);">${d.name}</td>
+            <td><span class="tag" style="background:var(--surface-container-high);">${d.category}</span></td>
+            <td>${d.desc}</td>
+            <td><span class="tag tag--${r.status}">${statusText[r.status]}</span></td>
+            <td><button type="button" class="mini-quiz-btn" onclick="startSingleDrugQuiz(${d.id})">演習</button></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function exportDataJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "yakuri13_demo_data.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('JSONファイルをダウンロードしました。');
+    }
+
+    function toggleImportModal(show) {
+      const modal = document.getElementById('import-modal');
+      if (show) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
+
+    function processImportJSON() {
+      const txt = document.getElementById('import-json-text').value;
+      try {
+        const parsed = JSON.parse(txt);
+        if (parsed && typeof parsed === 'object') {
+          records = Object.assign(records, parsed);
+          persistState();
+          updateDashboard();
+          toggleImportModal(false);
+          showToast('学習データを取り込みました。');
+        }
+      } catch (e) {
+        showToast('JSON形式が無効です。');
+      }
+    }
+
+    function confirmResetAll() {
+      initRecords();
+      persistState();
+      updateDashboard();
+      showToast('学習履歴を初期化しました。');
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadState();
+      renderCategoryView();
+    });
+  </script>
+</body>
+</html>
